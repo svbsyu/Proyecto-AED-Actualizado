@@ -1,7 +1,6 @@
 package proyecto;
 
 import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -45,8 +43,6 @@ public class ManteAlumnos extends JDialog {
 	private JTextField txtApellidoAlumno;
 	private JTextField txtCelularAlumno;
 	private JComboBox<String> cboEstado;
-	private JSeparator separator;
-	private JLabel lblMantAlumnos;
 	private JButton btnOk;
 	private JButton btnIngresar;
 	private JButton btnModificar;
@@ -111,73 +107,64 @@ public class ManteAlumnos extends JDialog {
 		contentPane.setLayout(null);
 		
 		lblCodigo = new JLabel("Codigo");
-		lblCodigo.setBounds(37, 64, 98, 14);
+		lblCodigo.setBounds(10, 15, 98, 14);
 		contentPane.add(lblCodigo);
 		
 		lblNombres = new JLabel("Nombres");
-		lblNombres.setBounds(37, 93, 64, 14);
+		lblNombres.setBounds(10, 40, 64, 14);
 		contentPane.add(lblNombres);
 		
 		lblApellidos = new JLabel("Apellidos");
-		lblApellidos.setBounds(37, 121, 55, 14);
+		lblApellidos.setBounds(10, 65, 55, 14);
 		contentPane.add(lblApellidos);
 		
 		lblCelular = new JLabel("Celular");
-		lblCelular.setBounds(37, 149, 55, 14);
+		lblCelular.setBounds(10, 90, 55, 14);
 		contentPane.add(lblCelular);
 		
 		lblDNI = new JLabel("DNI");
-		lblDNI.setBounds(37, 177, 55, 14);
+		lblDNI.setBounds(10, 115, 55, 14);
 		contentPane.add(lblDNI);
 		
 		lblEstado = new JLabel("Estado");
-		lblEstado.setBounds(37, 213, 55, 14);
+		lblEstado.setBounds(10, 140, 55, 14);
 		contentPane.add(lblEstado);
 		
 		txtCodigoAlumno = new JTextField();
 		txtCodigoAlumno.setEnabled(false);
-		txtCodigoAlumno.setBounds(102, 61, 121, 20);
+		txtCodigoAlumno.setBounds(75, 12, 121, 20);
 		contentPane.add(txtCodigoAlumno);
 		txtCodigoAlumno.setColumns(10);
 		
 		txtNombreAlumno = new JTextField();
 		txtNombreAlumno.setEnabled(false);
 		txtNombreAlumno.setColumns(10);
-		txtNombreAlumno.setBounds(102, 90, 244, 20);
+		txtNombreAlumno.setBounds(75, 37, 244, 20);
 		contentPane.add(txtNombreAlumno);
 		
 		txtApellidoAlumno = new JTextField();
 		txtApellidoAlumno.setEnabled(false);
 		txtApellidoAlumno.setColumns(10);
-		txtApellidoAlumno.setBounds(102, 118, 244, 20);
+		txtApellidoAlumno.setBounds(75, 62, 244, 20);
 		contentPane.add(txtApellidoAlumno);
 		
 		txtCelularAlumno = new JTextField();
 		txtCelularAlumno.setEnabled(false);
 		txtCelularAlumno.setColumns(10);
-		txtCelularAlumno.setBounds(102, 146, 121, 20);
+		txtCelularAlumno.setBounds(75, 87, 121, 20);
 		contentPane.add(txtCelularAlumno);
 		
 		txtDNI = new JTextField();
 		txtDNI.setEnabled(false);
 		txtDNI.setColumns(10);
-		txtDNI.setBounds(102, 174, 121, 20);
+		txtDNI.setBounds(75, 112, 121, 20);
 		contentPane.add(txtDNI);
 		
 		cboEstado = new JComboBox<String>();
 		cboEstado.setModel(new DefaultComboBoxModel<String>(new String[] {"MATRICULADO", "REGISTRADO", "RETIRADO"}));
-		cboEstado.setBounds(102, 209, 121, 22);
+		cboEstado.setBounds(75, 136, 121, 22);
 		cboEstado.setEnabled(false);
 		contentPane.add(cboEstado);
-		
-		separator = new JSeparator();
-		separator.setBounds(10, 36, 662, 14);
-		contentPane.add(separator);
-		
-		lblMantAlumnos = new JLabel("Mantenimiento de Alumnos");
-		lblMantAlumnos.setFont(new Font("Sitka Subheading", Font.BOLD, 24));
-		lblMantAlumnos.setBounds(197, 0, 321, 37);
-		contentPane.add(lblMantAlumnos);
 		
 		btnOk = new JButton("Ok");
 		btnOk.addActionListener(new ActionListener() {
@@ -186,7 +173,7 @@ public class ManteAlumnos extends JDialog {
 			}
 		});
 		btnOk.setEnabled(false);
-		btnOk.setBounds(233, 209, 113, 23);
+		btnOk.setBounds(206, 136, 113, 23);
 		contentPane.add(btnOk);
 		
 		btnIngresar = new JButton("Ingresar");
@@ -195,7 +182,7 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnIngresar(e);
 			}
 		});
-		btnIngresar.setBounds(650, 54, 113, 23);
+		btnIngresar.setBounds(661, 15, 113, 23);
 		contentPane.add(btnIngresar);
 		
 		btnModificar = new JButton("Modificar");
@@ -204,7 +191,7 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnModificar(e);
 			}
 		});
-		btnModificar.setBounds(650, 133, 113, 23);
+		btnModificar.setBounds(661, 65, 113, 23);
 		contentPane.add(btnModificar);
 		
 		btnConsultar = new JButton("Consultar");
@@ -213,7 +200,7 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnConsultar(e);
 			}
 		});
-		btnConsultar.setBounds(650, 93, 113, 23);
+		btnConsultar.setBounds(661, 40, 113, 23);
 		contentPane.add(btnConsultar);
 		
 		btnEliminar = new JButton("Eliminar");
@@ -222,7 +209,7 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnEliminar(e);
 			}
 		});
-		btnEliminar.setBounds(650, 170, 113, 23);
+		btnEliminar.setBounds(661, 90, 113, 23);
 		contentPane.add(btnEliminar);
 		
 		btnListar = new JButton("Listar");
@@ -231,11 +218,11 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnListar(e);
 			}
 		});
-		btnListar.setBounds(527, 170, 113, 23);
+		btnListar.setBounds(538, 131, 236, 23);
 		contentPane.add(btnListar);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 254, 774, 296);
+		scrollPane.setBounds(10, 199, 764, 351);
 		contentPane.add(scrollPane);
 		
 		btnSalir = new JButton("Salir");
@@ -244,7 +231,7 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnSalir(e);
 			}
 		});
-		btnSalir.setBounds(527, 204, 236, 23);
+		btnSalir.setBounds(538, 165, 236, 23);
 		contentPane.add(btnSalir);
 		
 		tblTabla = new JTable();
@@ -266,7 +253,7 @@ public class ManteAlumnos extends JDialog {
 				actionPerformedBtnOpciones(e);
 			}
 		});
-		btnOpciones.setBounds(527, 54, 113, 105);
+		btnOpciones.setBounds(538, 15, 113, 105);
 		contentPane.add(btnOpciones);
 		
 		btnBuscar = new JButton("Buscar");
@@ -276,7 +263,7 @@ public class ManteAlumnos extends JDialog {
 			}
 		});
 		btnBuscar.setEnabled(false);
-		btnBuscar.setBounds(233, 60, 113, 23);
+		btnBuscar.setBounds(206, 11, 113, 23);
 		contentPane.add(btnBuscar);
 		
 		ajustarAnchoColumnas();

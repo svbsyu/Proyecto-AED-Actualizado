@@ -1,7 +1,7 @@
 package proyecto;
 
 import java.awt.EventQueue;
-import java.awt.Font;
+
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
+
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -33,13 +33,9 @@ public class ManteCursos extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel lblCodigoCurso;
-	private JLabel lblNombreCurso;
-	private JLabel lblCodigoDocente;
 	private JTextField txtCodigoCurso;
 	private JTextField txtNombreCurso;
 	private JTextField txtHoras;
-	private JSeparator separator;
-	private JLabel lblMantCursos;
 	private JButton btnIngresar;
 	private JButton btnOpciones;
 	private JButton btnModificar;
@@ -49,7 +45,6 @@ public class ManteCursos extends JDialog {
 	private JScrollPane scrollPane;
 	private JTable tblTabla;
 	private DefaultTableModel modelo;
-	private JLabel lblHora;
 	private JTextField txtCodigoDocente;
 	private JButton btnBuscar;
 	private JButton btnOk;
@@ -90,6 +85,7 @@ public class ManteCursos extends JDialog {
 	 * Create the dialog.
 	 */
 	public ManteCursos() {
+		setResizable(false);
 		setModal(true);
 		setTitle("MANTENIMIENTO DE CURSOS");
 		setBounds(100, 100, 800, 600);
@@ -104,22 +100,13 @@ public class ManteCursos extends JDialog {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		lblMantCursos = new JLabel("Mantenimiento de Cursos");
-		lblMantCursos.setFont(new Font("Sitka Subheading", Font.BOLD, 24));
-		lblMantCursos.setBounds(235, 0, 321, 37);
-		contentPane.add(lblMantCursos);
-		
-		separator = new JSeparator();
-		separator.setBounds(10, 36, 764, 14);
-		contentPane.add(separator);
-		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 241, 764, 309);
+		scrollPane.setBounds(10, 195, 764, 355);
 		contentPane.add(scrollPane);
 		
 		tblTabla = new JTable();
 		tblTabla.setFillsViewportHeight(true);
-		scrollPane.setColumnHeaderView(tblTabla);
+		scrollPane.setViewportView(tblTabla);
 		
 		modelo = new DefaultTableModel();
 		modelo.addColumn("Código del curso");
@@ -129,69 +116,57 @@ public class ManteCursos extends JDialog {
 		tblTabla.setModel(modelo);
 		
 		txtHoras = new JTextField();
-		txtHoras.setBounds(118, 173, 121, 22);
+		txtHoras.setBounds(118, 96, 121, 22);
 		contentPane.add(txtHoras);
 		txtHoras.setEnabled(false);
 		txtHoras.setColumns(10);
 		
 		txtCodigoDocente = new JTextField();
-		txtCodigoDocente.setBounds(118, 136, 121, 22);
+		txtCodigoDocente.setBounds(118, 69, 121, 22);
 		contentPane.add(txtCodigoDocente);
 		txtCodigoDocente.setEnabled(false);
 		txtCodigoDocente.setColumns(10);
 		
-		lblHora = new JLabel("Horas");
-		lblHora.setBounds(10, 177, 98, 14);
-		contentPane.add(lblHora);
-		
-		lblCodigoDocente = new JLabel("Código del docente");
-		lblCodigoDocente.setBounds(10, 138, 114, 18);
-		contentPane.add(lblCodigoDocente);
-		
-		lblNombreCurso = new JLabel("Nombre del curso");
-		lblNombreCurso.setBounds(10, 99, 106, 17);
-		contentPane.add(lblNombreCurso);
-		
 		lblCodigoCurso = new JLabel("Código del curso");
-		lblCodigoCurso.setBounds(10, 60, 98, 17);
+		lblCodigoCurso.setBounds(10, 15, 98, 17);
 		contentPane.add(lblCodigoCurso);
 		
 		txtNombreCurso = new JTextField();
-		txtNombreCurso.setBounds(118, 97, 253, 20);
+		txtNombreCurso.setBounds(118, 41, 253, 20);
 		contentPane.add(txtNombreCurso);
 		txtNombreCurso.setEnabled(false);
 		txtNombreCurso.setColumns(10);
 		
 		txtCodigoCurso = new JTextField();
-		txtCodigoCurso.setBounds(118, 59, 121, 20);
+		txtCodigoCurso.setBounds(118, 14, 121, 20);
 		contentPane.add(txtCodigoCurso);
 		txtCodigoCurso.setEnabled(false);
 		txtCodigoCurso.setColumns(10);
 		
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setEnabled(false);
-		btnBuscar.setBounds(258, 56, 113, 25);
+		btnBuscar.setBounds(258, 11, 113, 25);
 		contentPane.add(btnBuscar);
 		
 		btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(661, 172, 113, 23);
+		btnEliminar.setBounds(661, 96, 113, 23);
 		contentPane.add(btnEliminar);
 		
 		btnModificar = new JButton("Modificar");
-		btnModificar.setBounds(661, 135, 113, 23);
+		btnModificar.setBounds(661, 69, 113, 23);
 		contentPane.add(btnModificar);
 		
 		btnIngresar = new JButton("Ingresar");
-		btnIngresar.setBounds(661, 56, 113, 23);
+		btnIngresar.setBounds(661, 12, 113, 23);
 		contentPane.add(btnIngresar);
 		
 		btnOk = new JButton("OK");
 		btnOk.setEnabled(false);
-		btnOk.setBounds(258, 172, 113, 25);
+		btnOk.setBounds(258, 95, 113, 25);
 		contentPane.add(btnOk);
 		
 		btnListar = new JButton("Listar");
-		btnListar.setBounds(661, 206, 113, 23);
+		btnListar.setBounds(538, 128, 236, 23);
 		contentPane.add(btnListar);
 		
 		btnOpciones = new JButton("Opciones");
@@ -200,11 +175,11 @@ public class ManteCursos extends JDialog {
 				actionPerformedBtnOpciones(e);
 			}
 		});
-		btnOpciones.setBounds(538, 58, 113, 99);
+		btnOpciones.setBounds(538, 15, 113, 103);
 		contentPane.add(btnOpciones);
 		
 		btnConsultar = new JButton("Consultar");
-		btnConsultar.setBounds(661, 95, 113, 23);
+		btnConsultar.setBounds(661, 40, 113, 23);
 		contentPane.add(btnConsultar);
 		
 		btnSalir = new JButton("Salir");
@@ -213,8 +188,20 @@ public class ManteCursos extends JDialog {
 				actionPerformedBtnSalir(e);
 			}
 		});
-		btnSalir.setBounds(538, 172, 113, 23);
+		btnSalir.setBounds(538, 161, 236, 23);
 		contentPane.add(btnSalir);
+		
+		lblNombreDelCurso = new JLabel("Nombre del curso");
+		lblNombreDelCurso.setBounds(10, 43, 98, 17);
+		contentPane.add(lblNombreDelCurso);
+		
+		lblCodigoDelDocente = new JLabel("Codigo del docente");
+		lblCodigoDelDocente.setBounds(10, 69, 98, 17);
+		contentPane.add(lblCodigoDelDocente);
+		
+		lblHoras = new JLabel("Horas");
+		lblHoras.setBounds(10, 96, 98, 17);
+		contentPane.add(lblHoras);
 		btnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPerformedBtnConsultar(e);
@@ -258,6 +245,9 @@ public class ManteCursos extends JDialog {
 	
 	// Declaración global
 	ArregloCurso ac = new ArregloCurso();
+	private JLabel lblNombreDelCurso;
+	private JLabel lblCodigoDelDocente;
+	private JLabel lblHoras;
 	
 	protected void actionPerformedBtnIngresar(ActionEvent e) {
 		tipoOperacion = ADICIONAR;

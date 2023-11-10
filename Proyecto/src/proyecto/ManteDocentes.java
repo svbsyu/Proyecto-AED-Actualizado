@@ -81,6 +81,7 @@ private int tipoOperacion;
 	 * Create the dialog.
 	 */
 	public ManteDocentes() {
+		setResizable(false);
 		setTitle("MANTENIMIENTO DE DOCENTES");
 		setBounds(100, 100, 800, 600);
 		
