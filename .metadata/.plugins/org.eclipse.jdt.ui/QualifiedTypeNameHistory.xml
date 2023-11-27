@@ -11,4 +11,10 @@
     <fullyQualifiedTypeName name="proyecto.GuiPrincipal"/>
     <fullyQualifiedTypeName name="java.awt.Dimension"/>
     <fullyQualifiedTypeName name="Clases.Docente"/>
+    <fullyQualifiedTypeName name="Hijos.Alumno"/>
+    <fullyQualifiedTypeName name="Padre.Persona"/>
+    <fullyQualifiedTypeName name="java.lang.Integer"/>
+    <fullyQualifiedTypeName name="Arreglos.ArregloDocente"/>
+    <fullyQualifiedTypeName name="Hijos.Docente"/>
+    <fullyQualifiedTypeName name="Clases.Curso"/>
 </qualifiedTypeNameHistroy>

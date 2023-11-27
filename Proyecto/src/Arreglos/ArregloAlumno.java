@@ -4,7 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import Clases.Alumno;
+import Hijos.Alumno;
 
 public class ArregloAlumno {
     //Atributos Privados
@@ -39,7 +39,7 @@ public class ArregloAlumno {
     
     public Alumno buscar(String nombreAlumno) {
     	for(int i = 0; i<tamanio(); i++)
-    		if(obtener(i).getNombre().equals(nombreAlumno))
+    		if(obtener(i).getNombres().equals(nombreAlumno))
     			return obtener(i);
     	return null;
     }
@@ -74,9 +74,9 @@ public class ArregloAlumno {
     		for(int i=0; i<tamanio(); i++) {
     			x = obtener(i);
     			linea = x.getCodigoAlumno() + ";" +
-    					x.getNombre() + ";" + 
-    					x.getApellido() + ";" +
-    					x.getCelular() + ";" +
+    					x.getNombres() + ";" + 
+    					x.getApellidos() + ";" +
+    					x.getTelefono() + ";" +
     					x.getDni() + ";" +
     					x.getEstado();
     			pw.println(linea);
@@ -89,7 +89,7 @@ public class ArregloAlumno {
     public void cargarAlumnos() {
     	try {
     		BufferedReader br;
-    		String linea, nombreAlumno, apellidoAlumno, celularAlumno, dniAlumno;
+    		String linea, nombreAlumno, apellidoAlumno, telefonoAlumno, dniAlumno;
     		String[] s;
     		int codigoAlumno, estado;
     		br = new BufferedReader(new FileReader("alumnos.txt"));
@@ -98,10 +98,10 @@ public class ArregloAlumno {
     			codigoAlumno = Integer.parseInt(s[0].trim());
     			nombreAlumno = s[1].trim();
     			apellidoAlumno = s[2].trim();
-    			celularAlumno = s[3].trim();
+    			telefonoAlumno = s[3].trim();
     			dniAlumno = s[4].trim();
     			estado = Integer.parseInt(s[5].trim());
-    			adicionar(new Alumno(codigoAlumno, nombreAlumno, apellidoAlumno, celularAlumno, dniAlumno, estado));
+    			adicionar(new Alumno(codigoAlumno, nombreAlumno, apellidoAlumno, telefonoAlumno, dniAlumno, estado));
     		}
     		br.close();
     	} catch(Exception e) {

@@ -1,0 +1,557 @@
+package proyecto;
+
+import java.awt.EventQueue;
+import java.awt.Image;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.UIManager;
+import Arreglos.ArregloDocente;
+import Hijos.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class ManteDocentes extends JDialog {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private DefaultTableModel modelo;
+	private JButton btnOpciones;
+	private JButton btnAdicionar;
+	private JButton btnConsultar;
+	private JButton btnModificar;
+	private JButton btnEliminar;
+	private JButton btnBuscar;
+	private JButton btnOK;
+	private JLabel lblCodigo;
+	private JTextField txtCodigo;
+	private JLabel lblNombres;
+	private JTextField txtNombre;
+	private JLabel lblApellidos;
+	private JTextField txtApellidos;
+	private JLabel lblCelular;
+	private JTextField txtCelular;
+	private JLabel lblDNI;
+	private JTextField txtDNI;
+	private JButton btnSalir;
+	private JLabel lblCategoria;
+	private JComboBox<String> cboCategoria;
+	private JScrollPane scrollPane;
+	private JTable table;
+	
+private int tipoOperacion;
+	
+	//  Constantes para los tipos de operaciones
+	public final static int ADICIONAR = 0;
+	public final static int CONSULTAR = 1;
+	public final static int MODIFICAR = 2;
+	public final static int ELIMINAR  = 3;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					ManteDocentes dialog = new ManteDocentes();
+					dialog.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public ManteDocentes() {
+		setResizable(false);
+		setTitle("MANTENIMIENTO DE DOCENTES");
+		setBounds(100, 100, 800, 600);
+		
+		// Logo principal
+		ImageIcon logo = new ImageIcon(GuiPrincipal.class.getResource("/Imagenes/Logo.png"));
+		Image imagen = logo.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		setIconImage(new ImageIcon(imagen).getImage());
+		getContentPane().setLayout(null);
+		
+		btnOpciones = new JButton("Opciones");
+		btnOpciones.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnOpciones(e);
+			}
+		});
+		btnOpciones.setEnabled(false);
+		btnOpciones.setBounds(545, 11, 100, 98);
+		getContentPane().add(btnOpciones);
+		
+		btnAdicionar = new JButton("Adicionar");
+		btnAdicionar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnAdicionar(e);
+			}
+		});
+		btnAdicionar.setBounds(654, 11, 120, 23);
+		getContentPane().add(btnAdicionar);
+		
+		btnConsultar = new JButton("Consultar");
+		btnConsultar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnConsultar(e);
+			}
+		});
+		btnConsultar.setBounds(654, 36, 120, 23);
+		getContentPane().add(btnConsultar);
+		
+		btnModificar = new JButton("Modificar");
+		btnModificar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnModificar(e);
+			}
+		});
+		btnModificar.setBounds(654, 61, 120, 23);
+		getContentPane().add(btnModificar);
+		
+		btnEliminar = new JButton("Eliminar");
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnEliminar(e);
+			}
+		});
+		btnEliminar.setBounds(654, 86, 120, 23);
+		getContentPane().add(btnEliminar);
+		
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnBuscar(e);
+			}
+		});
+		btnBuscar.setEnabled(false);
+		btnBuscar.setBounds(186, 11, 101, 23);
+		getContentPane().add(btnBuscar);
+		
+		btnOK = new JButton("OK");
+		btnOK.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnOK(e);
+			}
+		});
+		btnOK.setEnabled(false);
+		btnOK.setBounds(187, 141, 100, 23);
+		getContentPane().add(btnOK);
+		
+		lblCodigo = new JLabel("C\u00F3digo");
+		lblCodigo.setBounds(10, 11, 110, 23);
+		getContentPane().add(lblCodigo);
+		
+		txtCodigo = new JTextField();
+		txtCodigo.setEditable(false);
+		txtCodigo.setColumns(10);
+		txtCodigo.setBounds(90, 11, 86, 23);
+		getContentPane().add(txtCodigo);
+		
+		lblNombres = new JLabel("Nombres");
+		lblNombres.setBounds(10, 36, 110, 23);
+		getContentPane().add(lblNombres);
+		
+		txtNombre = new JTextField();
+		txtNombre.setEditable(false);
+		txtNombre.setColumns(10);
+		txtNombre.setBounds(90, 36, 197, 23);
+		getContentPane().add(txtNombre);
+		
+		lblApellidos = new JLabel("Apellidos");
+		lblApellidos.setBounds(10, 61, 110, 23);
+		getContentPane().add(lblApellidos);
+		
+		txtApellidos = new JTextField();
+		txtApellidos.setEditable(false);
+		txtApellidos.setColumns(10);
+		txtApellidos.setBounds(90, 61, 197, 23);
+		getContentPane().add(txtApellidos);
+		
+		lblCelular = new JLabel("Celular");
+		lblCelular.setBounds(10, 86, 110, 23);
+		getContentPane().add(lblCelular);
+		
+		txtCelular = new JTextField();
+		txtCelular.setEditable(false);
+		txtCelular.setColumns(10);
+		txtCelular.setBounds(90, 86, 86, 23);
+		getContentPane().add(txtCelular);
+		
+		lblDNI = new JLabel("DNI");
+		lblDNI.setBounds(10, 113, 110, 23);
+		getContentPane().add(lblDNI);
+		
+		txtDNI = new JTextField();
+		txtDNI.setEditable(false);
+		txtDNI.setColumns(10);
+		txtDNI.setBounds(90, 113, 86, 23);
+		getContentPane().add(txtDNI);
+		
+		btnSalir = new JButton("SALIR");
+		btnSalir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnSalir(e);
+			}
+		});
+		btnSalir.setBounds(545, 113, 229, 23);
+		getContentPane().add(btnSalir);
+		
+		lblCategoria = new JLabel("Categoria");
+		lblCategoria.setBounds(10, 141, 86, 23);
+		getContentPane().add(lblCategoria);
+		
+		cboCategoria = new JComboBox<String>();
+		cboCategoria.setModel(new DefaultComboBoxModel<String>(new String[] {"Inicial", "Primaria", "Secundaria"}));
+		cboCategoria.setEnabled(false);
+		cboCategoria.setBounds(90, 141, 86, 23);
+		getContentPane().add(cboCategoria);
+		
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 175, 764, 375);
+		getContentPane().add(scrollPane);
+		
+		table = new JTable();
+		table.setFillsViewportHeight(true);
+		scrollPane.setViewportView(table);
+		
+		modelo = new DefaultTableModel();
+		modelo.addColumn("Código");
+		modelo.addColumn("Nombres");
+		modelo.addColumn("Apellidos");
+		modelo.addColumn("Celular");
+		modelo.addColumn("DNI");
+		modelo.addColumn("Categoria");
+		table.setModel(modelo);
+		listar();
+	}
+	ArregloDocente ad = new ArregloDocente();
+	
+	protected void actionPerformedBtnAdicionar(ActionEvent e) {
+		tipoOperacion = ADICIONAR;
+		txtCodigo.setText("" + ad.codigoCorrelativo());
+		habilitarEntradas(true);
+		habilitarBotones(false);
+		txtNombre.requestFocus();
+	}
+	protected void actionPerformedBtnOK(ActionEvent e) {
+		switch (tipoOperacion) {
+		case ADICIONAR:
+			adicionarDocente();
+			break;
+		case CONSULTAR:
+			consultarDocente();
+			break;
+		case MODIFICAR:
+			modificarDocente();
+			break;
+		case ELIMINAR:
+			eliminarDocente();
+	}
+	}
+	protected void actionPerformedBtnBuscar(ActionEvent e) {
+		consultarPersona();
+	}
+	protected void actionPerformedBtnOpciones(ActionEvent e) {
+		txtCodigo.setText("");
+		txtNombre.setText("");
+		txtApellidos.setText("");
+		txtCelular.setText("");
+		txtDNI.setText("");
+		txtCodigo.setEditable(false);
+		habilitarEntradas(false);
+		habilitarBotones(true);
+	}
+	protected void actionPerformedBtnModificar(ActionEvent e) {
+		tipoOperacion = MODIFICAR;
+		txtCodigo.setEditable(true);
+		habilitarBotones(false);
+		txtCodigo.requestFocus();
+	}
+	protected void actionPerformedBtnEliminar(ActionEvent e) {
+		tipoOperacion = ELIMINAR;
+		txtCodigo.setEditable(true);
+		habilitarBotones(false);
+		txtCodigo.requestFocus();
+	}
+	protected void actionPerformedBtnConsultar(ActionEvent e) {
+		tipoOperacion = CONSULTAR;
+		txtCodigo.setEditable(true);
+		habilitarBotones(false);
+		txtCodigo.requestFocus();
+	}
+	int leerCodigo() {
+		return Integer.parseInt(txtCodigo.getText().trim());
+	}
+	String leerNombre() {
+		return txtNombre.getText().trim();
+	}
+	String leerApellidos() {
+		return txtApellidos.getText().trim();
+	}
+	String leerCelular() {
+		return txtCelular.getText().trim();
+	}
+	String leerDni() {
+		return txtDNI.getText().trim();
+	}
+	int leerPosCategoria() {
+		return cboCategoria.getSelectedIndex();
+	}
+	int confirmar(String s) {
+		return JOptionPane.showConfirmDialog(this, s, "Alerta", 0, 1, null);
+	}
+	String enTextoCategoria(int i) {
+		return cboCategoria.getItemAt(i);
+	}
+	void mensaje(String s) {
+		JOptionPane.showMessageDialog(this, s, "Información", 0);
+	}
+	void error(String s, JTextField txt) {
+		mensaje(s);
+		txt.setText("");
+		txt.requestFocus();
+	}void habilitarEntradas(boolean sino) {
+		txtNombre.setEditable(sino);
+		if (tipoOperacion == ADICIONAR)
+			txtDNI.setEditable(sino);
+			txtNombre.setEditable(sino);
+			txtApellidos.setEditable(sino);
+			txtCelular.setEditable(sino);
+			cboCategoria.setEnabled(sino);
+		
+	}
+	void habilitarBotones(boolean sino) {
+		if (tipoOperacion == ADICIONAR)
+			btnOK.setEnabled(!sino);
+		else {
+			btnBuscar.setEnabled(!sino);
+			btnOK.setEnabled(false);
+		}	
+		btnAdicionar.setEnabled(sino);
+		btnConsultar.setEnabled(sino);
+		btnModificar.setEnabled(sino);
+		btnEliminar.setEnabled(sino);
+		btnOpciones.setEnabled(!sino);		
+	}
+	void listar() {
+		Docente x;
+		modelo.setRowCount(0);
+		for(int i = 0; i < ad.tamanio(); i++) {
+			x = ad.obtener(i);
+			Object[] fila = {
+					x.getCodigoDocente(),
+					x.getNombres(),
+					x.getApellidos(),
+					x.getTelefono(),
+					x.getDni(),
+					enTextoCategoria(x.getCategoria())
+			};
+		modelo.addRow(fila);
+		}
+	}
+	void adicionarDocente() {
+		int codigo = leerCodigo();
+		String nombre = leerNombre();
+		if(nombre.length() > 0) {
+			String apellido = leerApellidos();
+			if(apellido.length() > 0) {
+				String celular = leerCelular();
+				if(celular.length() > 0) {
+					String telefonia = leerCelular();
+					String dni = leerDni();
+					if(ad.buscar(dni)==null){
+						try {
+							int categoria = leerPosCategoria();
+							Docente nuevo = new Docente(codigo, nombre, apellido, telefonia, dni, categoria);
+							ad.adicionar(nuevo);
+							listar();
+							txtCodigo.setText("" + ad.codigoCorrelativo());
+							txtNombre.setText("");
+							txtApellidos.setText("");
+							txtCelular.setText("");
+							txtDNI.setText("");
+							txtNombre.requestFocus();
+						}
+						catch(Exception e) {
+						error("El DNI"+ dni + "ya existe.", txtDNI);
+					}
+				}
+				}
+				else
+					error("Ingrese un número valido", txtCelular);
+			}
+			else
+				error("Ingrese el apellido correctamente", txtApellidos);
+		}
+		else
+			error("Ingrese el nombre correctamente", txtNombre);
+	}
+	void consultarDocente() {
+		try {
+			int codigo = leerCodigo();
+			Docente x = ad.buscar(codigo);
+			if(x != null) {
+				txtNombre.setText(x.getNombres());
+				txtApellidos.setText(x.getApellidos());
+				txtCelular.setText(x.getTelefono());
+				txtDNI.setText(x.getDni());
+				cboCategoria.setSelectedItem(x.getCategoria());
+				if(tipoOperacion == MODIFICAR) {
+					habilitarEntradas(true);
+					txtCodigo.setEditable(false);
+					btnBuscar.setEnabled(false);
+					btnOK.setEnabled(true);
+					txtNombre.requestFocus();
+				}
+				if (tipoOperacion == ELIMINAR) {
+					txtCodigo.setEditable(false);
+					btnBuscar.setEnabled(false);
+					btnOK.setEnabled(true);
+				}
+			}
+			else 
+				error("El codigo es incorrecto", txtCodigo);
+		}
+		catch(Exception e) {
+			error("Ingrese el codigo correctamente", txtCodigo);
+		}
+	}
+	public void actionPerformed(ActionEvent arg0) {
+		if (arg0.getSource() == btnEliminar) {
+			actionPerformedBtnEliminar(arg0);
+		}
+		if (arg0.getSource() == btnModificar) {
+			actionPerformedBtnModificar(arg0);
+		}
+		if (arg0.getSource() == btnConsultar) {
+			actionPerformedBtnConsultar(arg0);
+		}
+		if (arg0.getSource() == btnAdicionar) {
+			actionPerformedBtnAdicionar(arg0);
+		}
+		if (arg0.getSource() == btnOpciones) {
+			actionPerformedBtnOpciones(arg0);
+		}
+		if (arg0.getSource() == btnOK) {
+			actionPerformedBtnOK(arg0);
+		}
+		if (arg0.getSource() == btnBuscar) {
+			actionPerformedBtnBuscar(arg0);
+		}
+	}
+	void modificarDocente() {
+		try {
+			int codigo = leerCodigo();
+			Docente x = ad.buscar(codigo);
+			if(x != null) {
+				String nombre = leerNombre();
+				if(nombre.length() > 0) {
+					String apellidos = leerApellidos();
+					if(apellidos.length() > 0) {
+						String celular = leerCelular();
+						if(celular.length() > 0) {
+							String dni = leerDni();
+							if(dni.length() > 0)
+								try {
+									int estado = leerPosCategoria();
+									x.setNombres(nombre);
+									x.setApellidos(apellidos);
+									x.setTelefono(celular);
+									x.setDni(dni);
+									x.setCategoria(estado);
+									listar();
+								}
+							catch(Exception e) {
+								error("El dni se encuentra vacio", txtDNI);
+							}
+						}
+						else
+							error("Ingrese un número valido", txtCelular);
+					}
+					else
+						error("Ingrese un apellido", txtApellidos);
+				}
+				else
+					error("Ingrese un nombre", txtNombre);
+			}
+			else
+				error("El código no existe", txtCodigo);
+		}
+		catch(Exception e) {
+			error("Ingrese el codigo correctamente", txtCodigo);
+		}
+	}
+	void eliminarDocente() {
+		try {
+			int codigo = leerCodigo();
+			Docente x = ad.buscar(codigo);
+			if (x != null) {
+				int ok = confirmar("¿ Desea eliminar el registro ?");
+				if (ok == 0) {
+					ad.eliminar(x);
+					listar();
+					btnOK.setEnabled(false);
+				}
+			}
+			else
+				error("El código " + codigo + " no existe", txtCodigo);
+		}
+		catch (Exception e) {
+			error("Ingrese CÓDIGO correcto", txtCodigo);
+		}	
+	}
+	void consultarPersona() {
+		try {
+			int codigo = leerCodigo();
+			Docente x = ad.buscar(codigo);
+			if(x != null) {
+				txtNombre.setText(x.getNombres());
+				txtApellidos.setText(x.getApellidos());
+				txtCelular.setText(x.getTelefono());
+				txtDNI.setText(x.getDni());
+				cboCategoria.setSelectedIndex(x.getCategoria());
+				if(tipoOperacion == MODIFICAR) {
+					habilitarEntradas(true);
+					txtCodigo.setEditable(false);
+					txtDNI.setEditable(true);
+					btnBuscar.setEnabled(false);
+					btnOK.setEnabled(true);
+					txtNombre.requestFocus();
+				}
+				if (tipoOperacion == ELIMINAR) {
+					txtCodigo.setEditable(false);
+					btnBuscar.setEnabled(false);
+					btnOK.setEnabled(true);
+				}
+			}
+			else
+				error("El codigo no existe", txtCodigo);
+		}
+		catch(Exception e) {
+			error("Ingrese el codigo correctamente", txtCodigo);
+		}
+	}
+	protected void actionPerformedBtnSalir(ActionEvent e) {
+		dispose();
+	}
+}

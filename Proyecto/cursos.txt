@@ -1,2 +1,5 @@
-3001;WEB Y ALGO 1;1005;14.0
-3002;MATEMATICA;1006;14.0
+3001;Matematica I;1001;24.0
+3002;Matematica II;1002;18.0
+3003;Calculo I;1003;30.0
+3004;Historia del Arte;1004;15.0
+3005;Diseño Gráfico;1005;36.0

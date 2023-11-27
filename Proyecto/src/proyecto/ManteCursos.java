@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import Arreglos.ArregloCurso;
+import Arreglos.ArregloDocente;
 import Clases.Curso;
 
 import javax.swing.UIManager;
@@ -41,7 +42,6 @@ public class ManteCursos extends JDialog {
 	private JButton btnModificar;
 	private JButton btnConsultar;
 	private JButton btnEliminar;
-	private JButton btnListar;
 	private JScrollPane scrollPane;
 	private JTable tblTabla;
 	private DefaultTableModel modelo;
@@ -49,6 +49,9 @@ public class ManteCursos extends JDialog {
 	private JButton btnBuscar;
 	private JButton btnOk;
 	private JButton btnSalir;
+	private JLabel lblNombreDelCurso;
+	private JLabel lblCodigoDelDocente;
+	private JLabel lblHoras;
 	/**
 	 * Launch the application.
 	 */
@@ -61,7 +64,6 @@ public class ManteCursos extends JDialog {
 	public final static int CONSULTAR = 1;
 	public final static int MODIFICAR = 2;
 	public final static int ELIMINAR = 3;
-	public final static int LISTAR = 4;
 	
 	public static void main(String[] args) {
 		try {
@@ -105,6 +107,7 @@ public class ManteCursos extends JDialog {
 		contentPane.add(scrollPane);
 		
 		tblTabla = new JTable();
+		tblTabla.setEnabled(false);
 		tblTabla.setFillsViewportHeight(true);
 		scrollPane.setViewportView(tblTabla);
 		
@@ -165,10 +168,6 @@ public class ManteCursos extends JDialog {
 		btnOk.setBounds(258, 95, 113, 25);
 		contentPane.add(btnOk);
 		
-		btnListar = new JButton("Listar");
-		btnListar.setBounds(538, 128, 236, 23);
-		contentPane.add(btnListar);
-		
 		btnOpciones = new JButton("Opciones");
 		btnOpciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -176,6 +175,7 @@ public class ManteCursos extends JDialog {
 			}
 		});
 		btnOpciones.setBounds(538, 15, 113, 103);
+		btnOpciones.setEnabled(false);
 		contentPane.add(btnOpciones);
 		
 		btnConsultar = new JButton("Consultar");
@@ -188,7 +188,7 @@ public class ManteCursos extends JDialog {
 				actionPerformedBtnSalir(e);
 			}
 		});
-		btnSalir.setBounds(538, 161, 236, 23);
+		btnSalir.setBounds(538, 130, 236, 23);
 		contentPane.add(btnSalir);
 		
 		lblNombreDelCurso = new JLabel("Nombre del curso");
@@ -205,12 +205,6 @@ public class ManteCursos extends JDialog {
 		btnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPerformedBtnConsultar(e);
-			}
-		});
-
-		btnListar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				actionPerformedBtnListar(e);
 			}
 		});
 		btnOk.addActionListener(new ActionListener() {
@@ -245,9 +239,7 @@ public class ManteCursos extends JDialog {
 	
 	// Declaración global
 	ArregloCurso ac = new ArregloCurso();
-	private JLabel lblNombreDelCurso;
-	private JLabel lblCodigoDelDocente;
-	private JLabel lblHoras;
+	ArregloDocente ad = new ArregloDocente();
 	
 	protected void actionPerformedBtnIngresar(ActionEvent e) {
 		tipoOperacion = ADICIONAR;
@@ -278,9 +270,6 @@ public class ManteCursos extends JDialog {
 		habilitarBotones(false);
 		txtCodigoCurso.requestFocus();
 	}
-	protected void actionPerformedBtnListar(ActionEvent e) {
-		tipoOperacion = LISTAR;
-	}
 	protected void actionPerformedBtnOpciones(ActionEvent e) {
 		txtCodigoCurso.setText("");
 		txtNombreCurso.setText("");
@@ -310,8 +299,6 @@ public class ManteCursos extends JDialog {
 				break;
 			case ELIMINAR:
 				eliminarCurso();
-				break;
-			case LISTAR:
 				break;
 			default:
 				break;
@@ -345,9 +332,9 @@ public class ManteCursos extends JDialog {
 		int codigoCurso = leerCodigoCurso();
 		if(ac.buscar(codigoCurso) == null) {
 			String nombreCurso = leerNombreCurso();
-			if(nombreCurso.length() > 0 && ac.buscar(nombreCurso) == null)
-				try {
+			if(nombreCurso.length() > 0 && ac.buscar(nombreCurso) == null) {
 					int codigoDocente = leerCodigoDocente();
+					if(ad.buscar(codigoDocente) != null)
 					try {
 						double horas = leerHoras();
 						Curso nuevo = new Curso(codigoCurso, nombreCurso, codigoDocente, horas);
@@ -361,15 +348,16 @@ public class ManteCursos extends JDialog {
 					} catch(Exception e) {
 						error("Ingrese bien las HORAS",txtHoras);
 					}
-				} catch(Exception e) {
-					error("Ingrese bien el CÓDIGO DOCENTE",txtCodigoDocente);
-				}
+					else {
+						error("Ingrese bien el CÓDIGO DOCENTE",txtCodigoDocente);
+					}
+			}
 			else
 				error("Ingrese bien el NOMBRE DEL CURSO",txtNombreCurso);
 		} else
 			error("El CÓDIGO CURSO ya existe", txtCodigoCurso);
 	}
-///////////////////////////////////
+
 	void consultarCursos() {
 		try {
 			int codigoCurso = leerCodigoCurso();
@@ -393,7 +381,7 @@ public class ManteCursos extends JDialog {
 				}
 			}
 			else
-				error("El código" + codigoCurso + "no existe",txtCodigoCurso);
+				error("El código " + codigoCurso + " no existe",txtCodigoCurso);
 		} catch(Exception e) {
 			error("Ingrese el CÓDIGO DEL CURSO correctamente",txtCodigoCurso);
 		}
@@ -406,9 +394,9 @@ public class ManteCursos extends JDialog {
 			
 			if(x != null) {
 				String nombreCurso = leerNombreCurso();
-				if(nombreCurso.length() > 0)
-					try {
+				if(nombreCurso.length() > 0) {
 						int codigoDocente = leerCodigoDocente();
+						if(codigoDocente < 4 || codigoDocente > 4)
 						try{
 							double hora = leerHoras();
 							x.setNombre(nombreCurso);
@@ -423,9 +411,9 @@ public class ManteCursos extends JDialog {
 						} catch(Exception e) {
 							error("Ingrese bien las HORAS", txtHoras);
 						}
-					} catch(Exception e) {
-						error("Ingrese bien el CÓDIGO DOCENTE",txtCodigoDocente);
-					}
+						else
+							error("Ingrese bien el CÓDIGO DOCENTE",txtCodigoDocente);
+				}
 				else 
 					error("Ingrese el NOMBRE DEL CURSO CORRECTAMENTE", txtNombreCurso);
 			}
@@ -474,7 +462,7 @@ public class ManteCursos extends JDialog {
 			btnEliminar.setEnabled(sino);
 			btnConsultar.setEnabled(sino);
 			btnModificar.setEnabled(sino);
-			btnListar.setEnabled(sino);
+			btnOpciones.setEnabled(!sino);
 		}
 		else {
 		btnBuscar.setEnabled(!sino);
@@ -482,7 +470,7 @@ public class ManteCursos extends JDialog {
 		btnConsultar.setEnabled(sino);
 		btnModificar.setEnabled(sino);
 		btnEliminar.setEnabled(sino);
-		btnListar.setEnabled(sino);
+		btnOpciones.setEnabled(!sino);
 		}
 	}
 	
@@ -500,7 +488,7 @@ public class ManteCursos extends JDialog {
 	}
 	
 	String leerNombreCurso() {
-		return txtNombreCurso.getText().trim().toUpperCase();
+		return txtNombreCurso.getText().trim();
 	}
 	
 	int leerCodigoDocente() {

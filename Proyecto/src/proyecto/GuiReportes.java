@@ -6,9 +6,11 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
@@ -47,6 +49,11 @@ public class GuiReportes extends JDialog {
 		setModal(true);
 		setBounds(100, 100, 513, 472);
 		getContentPane().setLayout(null);
+		
+		// Logo principal
+		ImageIcon logo = new ImageIcon(GuiPrincipal.class.getResource("/Imagenes/Logo.png"));
+		Image imagen = logo.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+		setIconImage(new ImageIcon(imagen).getImage());
 		
 		lblReportes = new JLabel("Tipo de reportes");
 		lblReportes.setBounds(12, 13, 95, 16);

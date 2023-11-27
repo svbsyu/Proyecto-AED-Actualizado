@@ -1,16 +1,17 @@
 package Clases;
-public class Curso {
+
+public class Curso{
     //Atributos Privados
     private int codigoCurso, codigoDocente;
     private String nombre;
     private double horas;
     //Constructor
-    public Curso(int CodigoCurso, String nombre, int CodigoDocente, double horas) {
-        this.codigoCurso = CodigoCurso;
-        this.nombre = nombre;
-        this.codigoDocente = CodigoDocente;
-        this.horas = horas;
-    }
+	public Curso(int codigoCurso, String nombre, int codigoDocente, double horas) {
+		this.codigoCurso = codigoCurso;
+		this.nombre = nombre;
+		this.codigoDocente = codigoDocente;
+		this.horas = horas;
+	}
     //Getters and Setters
 	public int getCodigoCurso() {
 		return codigoCurso;

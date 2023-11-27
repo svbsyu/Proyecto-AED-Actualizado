@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.UIManager;
 import Arreglos.ArregloDocente;
-import Clases.Docente;
+import Hijos.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -221,7 +221,7 @@ private int tipoOperacion;
 		getContentPane().add(lblCategoria);
 		
 		cboCategoria = new JComboBox<String>();
-		cboCategoria.setModel(new DefaultComboBoxModel<String>(new String[] {"Inicial", "Primaria", "Secundaria"}));
+		cboCategoria.setModel(new DefaultComboBoxModel<String>(new String[] {"Día", "Tarde", "Noche"}));
 		cboCategoria.setEnabled(false);
 		cboCategoria.setBounds(90, 141, 86, 23);
 		getContentPane().add(cboCategoria);
@@ -231,6 +231,7 @@ private int tipoOperacion;
 		getContentPane().add(scrollPane);
 		
 		table = new JTable();
+		table.setEnabled(false);
 		table.setFillsViewportHeight(true);
 		scrollPane.setViewportView(table);
 		
@@ -360,9 +361,9 @@ private int tipoOperacion;
 			x = ad.obtener(i);
 			Object[] fila = {
 					x.getCodigoDocente(),
-					x.getNombre(),
+					x.getNombres(),
 					x.getApellidos(),
-					x.getTelefonia(),
+					x.getTelefono(),
 					x.getDni(),
 					enTextoCategoria(x.getCategoria())
 			};
@@ -379,7 +380,7 @@ private int tipoOperacion;
 				if(celular.length() > 0) {
 					String telefonia = leerCelular();
 					String dni = leerDni();
-					if(ad.buscar(dni)==null){
+					if(ad.buscar(dni) == null){
 						try {
 							int categoria = leerPosCategoria();
 							Docente nuevo = new Docente(codigo, nombre, apellido, telefonia, dni, categoria);
@@ -396,6 +397,8 @@ private int tipoOperacion;
 						error("El DNI"+ dni + "ya existe.", txtDNI);
 					}
 				}
+					else
+						error("El DNI ya está registrado", txtDNI);
 				}
 				else
 					error("Ingrese un número valido", txtCelular);
@@ -411,9 +414,9 @@ private int tipoOperacion;
 			int codigo = leerCodigo();
 			Docente x = ad.buscar(codigo);
 			if(x != null) {
-				txtNombre.setText(x.getNombre());
+				txtNombre.setText(x.getNombres());
 				txtApellidos.setText(x.getApellidos());
-				txtCelular.setText(x.getTelefonia());
+				txtCelular.setText(x.getTelefono());
 				txtDNI.setText(x.getDni());
 				cboCategoria.setSelectedItem(x.getCategoria());
 				if(tipoOperacion == MODIFICAR) {
@@ -471,12 +474,12 @@ private int tipoOperacion;
 						String celular = leerCelular();
 						if(celular.length() > 0) {
 							String dni = leerDni();
-							if(ad.buscar(dni) != null)
+							if(dni.length() > 0)
 								try {
 									int estado = leerPosCategoria();
-									x.setNombre(nombre);
+									x.setNombres(nombre);
 									x.setApellidos(apellidos);
-									x.setTelefonia(celular);
+									x.setTelefono(celular);
 									x.setDni(dni);
 									x.setCategoria(estado);
 									listar();
@@ -525,14 +528,15 @@ private int tipoOperacion;
 			int codigo = leerCodigo();
 			Docente x = ad.buscar(codigo);
 			if(x != null) {
-				txtNombre.setText(x.getNombre());
+				txtNombre.setText(x.getNombres());
 				txtApellidos.setText(x.getApellidos());
-				txtCelular.setText(x.getTelefonia());
+				txtCelular.setText(x.getTelefono());
 				txtDNI.setText(x.getDni());
 				cboCategoria.setSelectedIndex(x.getCategoria());
 				if(tipoOperacion == MODIFICAR) {
 					habilitarEntradas(true);
 					txtCodigo.setEditable(false);
+					txtDNI.setEditable(true);
 					btnBuscar.setEnabled(false);
 					btnOK.setEnabled(true);
 					txtNombre.requestFocus();
@@ -554,17 +558,3 @@ private int tipoOperacion;
 		dispose();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
