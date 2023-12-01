@@ -31,7 +31,7 @@ public class ArregloDocente {
 				return x;
 		}
 		return null;
-	}	
+	}
 	public Docente buscarTelf(int telefono) {
 		Docente x;
 		for(int i = 0; i < tamanio(); i++) {
@@ -55,7 +55,7 @@ public class ArregloDocente {
 		grabarDocente();
 	}
 	public int codigoCorrelativo() {
-	    if (tamanio() == 0 && obtener(0).getCodigoDocente() != 1001) {
+	    if (tamanio() == 0) {
 	    	return 1001;
 	    } 
 	    else{
@@ -80,6 +80,8 @@ public class ArregloDocente {
     					x.getApellidos() + ";" +
     					x.getTelefono() + ";" +
     					x.getDni() + ";" +
+    					x.getCodCurso() + ";" +
+    					x.getNomCurso() + ";" +
     					x.getCategoria();
     			pw.println(linea);
     		}
@@ -91,9 +93,9 @@ public class ArregloDocente {
 	public void cargarDocente() {
 		try {
 			BufferedReader br;
-			String linea, nombres, apellidos, telefono, dni;
+			String linea, nombres, apellidos, telefono, dni, nomCurso;
 			String[] s;
-			int codDocente, categoria;
+			int codDocente, categoria, codCurso;
 			br = new BufferedReader(new FileReader("docentes.txt"));
 			while((linea = br.readLine()) != null) {
 				s = linea.split(";");
@@ -102,11 +104,24 @@ public class ArregloDocente {
 				apellidos = s[2].trim();
 				telefono = s[3].trim();
 				dni = s[4].trim();
-				categoria = Integer.parseInt(s[5].trim());
-				adicionar(new Docente(codDocente, nombres, apellidos, telefono, dni, categoria));
+				codCurso = Integer.parseInt(s[5].trim());
+				nomCurso = s[6].trim();
+				categoria = Integer.parseInt(s[7].trim());
+				adicionar(new Docente(codDocente, nombres, apellidos, telefono, dni, codCurso, nomCurso, categoria));
 			}
 			br.close();
 		} catch(Exception e) {
 		}
 	}
+    public Docente nomApellido(String nombreAlumno, String apellidoAlumno) {
+    	String nomApe = nombreAlumno + apellidoAlumno;
+    	for(int i=0; i<tamanio(); i++) {
+    		if(nomApe.equals(obtener(i).nombreApellido()))
+    			return obtener(i);
+    	}
+    	return null;
+    }
+    public ArrayList <Docente> getDocente(){
+  		return this.doc;
+  	}
 }

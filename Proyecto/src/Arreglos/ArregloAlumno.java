@@ -116,7 +116,9 @@ public class ArregloAlumno {
     	}
     	return null;
     }
-    
+    public ArrayList <Alumno> getAlu(){
+		return this.alu;
+	}
     
     
 }

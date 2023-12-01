@@ -26,6 +26,7 @@ import Clases.Curso;
 
 import javax.swing.UIManager;
 
+
 public class ManteCursos extends JDialog {
 
 	/**
@@ -45,12 +46,11 @@ public class ManteCursos extends JDialog {
 	private JScrollPane scrollPane;
 	private JTable tblTabla;
 	private DefaultTableModel modelo;
-	private JTextField txtCodigoDocente;
 	private JButton btnBuscar;
 	private JButton btnOk;
 	private JButton btnSalir;
 	private JLabel lblNombreDelCurso;
-	private JLabel lblCodigoDelDocente;
+
 	private JLabel lblHoras;
 	/**
 	 * Launch the application.
@@ -103,10 +103,11 @@ public class ManteCursos extends JDialog {
 		contentPane.setLayout(null);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 195, 764, 355);
+		scrollPane.setBounds(10, 164, 764, 386);
 		contentPane.add(scrollPane);
 		
 		tblTabla = new JTable();
+		tblTabla.setRowSelectionAllowed(false);
 		tblTabla.setEnabled(false);
 		tblTabla.setFillsViewportHeight(true);
 		scrollPane.setViewportView(tblTabla);
@@ -114,21 +115,14 @@ public class ManteCursos extends JDialog {
 		modelo = new DefaultTableModel();
 		modelo.addColumn("Código del curso");
 		modelo.addColumn("Nombre del curso");
-		modelo.addColumn("Código del docente");
 		modelo.addColumn("Horas");
 		tblTabla.setModel(modelo);
 		
 		txtHoras = new JTextField();
-		txtHoras.setBounds(118, 96, 121, 22);
+		txtHoras.setBounds(118, 72, 121, 22);
 		contentPane.add(txtHoras);
 		txtHoras.setEnabled(false);
 		txtHoras.setColumns(10);
-		
-		txtCodigoDocente = new JTextField();
-		txtCodigoDocente.setBounds(118, 69, 121, 22);
-		contentPane.add(txtCodigoDocente);
-		txtCodigoDocente.setEnabled(false);
-		txtCodigoDocente.setColumns(10);
 		
 		lblCodigoCurso = new JLabel("Código del curso");
 		lblCodigoCurso.setBounds(10, 15, 98, 17);
@@ -141,7 +135,7 @@ public class ManteCursos extends JDialog {
 		txtNombreCurso.setColumns(10);
 		
 		txtCodigoCurso = new JTextField();
-		txtCodigoCurso.setBounds(118, 14, 121, 20);
+		txtCodigoCurso.setBounds(118, 12, 121, 22);
 		contentPane.add(txtCodigoCurso);
 		txtCodigoCurso.setEnabled(false);
 		txtCodigoCurso.setColumns(10);
@@ -165,7 +159,7 @@ public class ManteCursos extends JDialog {
 		
 		btnOk = new JButton("OK");
 		btnOk.setEnabled(false);
-		btnOk.setBounds(258, 95, 113, 25);
+		btnOk.setBounds(10, 105, 229, 25);
 		contentPane.add(btnOk);
 		
 		btnOpciones = new JButton("Opciones");
@@ -195,13 +189,18 @@ public class ManteCursos extends JDialog {
 		lblNombreDelCurso.setBounds(10, 43, 98, 17);
 		contentPane.add(lblNombreDelCurso);
 		
-		lblCodigoDelDocente = new JLabel("Codigo del docente");
-		lblCodigoDelDocente.setBounds(10, 69, 98, 17);
-		contentPane.add(lblCodigoDelDocente);
-		
 		lblHoras = new JLabel("Horas");
-		lblHoras.setBounds(10, 96, 98, 17);
+		lblHoras.setBounds(10, 72, 98, 17);
 		contentPane.add(lblHoras);
+		
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnCancelar(e);
+			}
+		});
+		btnCancelar.setBounds(258, 72, 113, 23);
+		contentPane.add(btnCancelar);
 		btnConsultar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPerformedBtnConsultar(e);
@@ -240,6 +239,7 @@ public class ManteCursos extends JDialog {
 	// Declaración global
 	ArregloCurso ac = new ArregloCurso();
 	ArregloDocente ad = new ArregloDocente();
+	private JButton btnCancelar;
 	
 	protected void actionPerformedBtnIngresar(ActionEvent e) {
 		tipoOperacion = ADICIONAR;
@@ -273,7 +273,6 @@ public class ManteCursos extends JDialog {
 	protected void actionPerformedBtnOpciones(ActionEvent e) {
 		txtCodigoCurso.setText("");
 		txtNombreCurso.setText("");
-		txtCodigoDocente.setText("");
 		txtHoras.setText("");
 		habilitarBotones(true);
 		habilitarCampos(false);
@@ -308,13 +307,38 @@ public class ManteCursos extends JDialog {
 		}
 	}
 	
+	protected void actionPerformedBtnCancelar(ActionEvent e) {
+		if(tipoOperacion == ADICIONAR) {
+			txtNombreCurso.setText("");
+
+			txtHoras.setText("");
+			txtNombreCurso.requestFocus();
+		}
+		
+		if(tipoOperacion == MODIFICAR || tipoOperacion == ELIMINAR) {
+			btnCancelar.setEnabled(false);
+			txtCodigoCurso.setText("");
+			
+			txtNombreCurso.setText("");
+			txtHoras.setText("");
+			btnBuscar.setEnabled(true);
+			txtCodigoCurso.setEnabled(true);
+			txtCodigoCurso.requestFocus();
+			txtNombreCurso.setEnabled(false);
+			
+			txtHoras.setEnabled(false);
+			btnOk.setEnabled(false);
+			btnCancelar.setEnabled(true);
+		}
+	
+	}
+	
 	// Métodos tipo void (sin parámetros)
 	void ajustarAnchoColumnas() {
 		TableColumnModel tcm = tblTabla.getColumnModel();
 		tcm.getColumn(0).setPreferredWidth(anchoColumna(10)); // Código del curso
 		tcm.getColumn(1).setPreferredWidth(anchoColumna(30)); // Nombre del curso
-		tcm.getColumn(2).setPreferredWidth(anchoColumna(10)); // Código del docente
-		tcm.getColumn(3).setPreferredWidth(anchoColumna(10)); // Horas
+		tcm.getColumn(2).setPreferredWidth(anchoColumna(10)); // Horas
 	}
 	
 	void listar() {
@@ -322,68 +346,60 @@ public class ManteCursos extends JDialog {
 		for(int i=0; i<ac.tamanio(); i++) {
 			Object[] fila = { ac.obtener(i).getCodigoCurso(),
 						      ac.obtener(i).getNombre(),
-							  ac.obtener(i).getCodigoDocente(),
 							  ac.obtener(i).getHoras() };
 			modelo.addRow(fila);
 		}
 	}
 	
 	void adicionarCursos() {
-		int codigoCurso = leerCodigoCurso();
-		if(ac.buscar(codigoCurso) == null) {
+		int codigoCuros = leerCodigoCurso();
+		if(ac.buscar(codigoCuros) == null){
 			String nombreCurso = leerNombreCurso();
-			if(nombreCurso.length() > 0 && ac.buscar(nombreCurso) == null) {
-					int codigoDocente = leerCodigoDocente();
-					if(ad.buscar(codigoDocente) != null)
-					try {
-						double horas = leerHoras();
-						Curso nuevo = new Curso(codigoCurso, nombreCurso, codigoDocente, horas);
-						ac.adicionar(nuevo);
-						listar();
-						txtCodigoCurso.setText("" + ac.codigoCorrelativo());
-						txtNombreCurso.setText("");
-						txtCodigoDocente.setText("");
-						txtHoras.setText("");
-						txtNombreCurso.requestFocus();
-					} catch(Exception e) {
-						error("Ingrese bien las HORAS",txtHoras);
-					}
-					else {
-						error("Ingrese bien el CÓDIGO DOCENTE",txtCodigoDocente);
-					}
+			if(nombreCurso.length() > 0 && ac.buscar(nombreCurso) == null){
+				try {
+					double horas = leerHoras();
+					Curso nuevo = new Curso(codigoCuros, nombreCurso, horas);
+					ac.adicionar(nuevo);
+					listar();
+					txtCodigoCurso.setText("" + ac.codigoCorrelativo());
+					txtNombreCurso.setText("");
+					txtHoras.setText("");
+					txtNombreCurso.requestFocus();
+				} catch (Exception e) {
+					error("Ingrese la hora correctamente", txtHoras);
+				}
 			}
-			else
-				error("Ingrese bien el NOMBRE DEL CURSO",txtNombreCurso);
-		} else
-			error("El CÓDIGO CURSO ya existe", txtCodigoCurso);
+			else{
+					error("El nombre ya existe", txtNombreCurso);
+				}
+		}
+		else{
+			error("El codigo curso ya existe", txtCodigoCurso);
+		}
 	}
 
 	void consultarCursos() {
 		try {
 			int codigoCurso = leerCodigoCurso();
 			Curso x = ac.buscar(codigoCurso);
-			
-			if(x != null) {
+			if(x != null){
 				txtNombreCurso.setText(x.getNombre());
-				txtCodigoDocente.setText("" + x.getCodigoDocente());
 				txtHoras.setText("" + x.getHoras());
-				if(tipoOperacion == MODIFICAR) {
+				if(tipoOperacion == MODIFICAR){
 					habilitarCampos(true);
 					txtCodigoCurso.setEnabled(false);
 					btnBuscar.setEnabled(false);
 					btnOk.setEnabled(true);
 					txtNombreCurso.requestFocus();
 				}
-				if(tipoOperacion == ELIMINAR) {
+				if (tipoOperacion == ELIMINAR) {
 					txtCodigoCurso.setEnabled(false);
 					btnBuscar.setEnabled(false);
 					btnOk.setEnabled(true);
 				}
 			}
-			else
-				error("El código " + codigoCurso + " no existe",txtCodigoCurso);
-		} catch(Exception e) {
-			error("Ingrese el CÓDIGO DEL CURSO correctamente",txtCodigoCurso);
+		} catch (Exception e) {
+			error("Ingrese bien el CÓDIGO DEL CURSO", txtCodigoCurso);
 		}
 	}
 	
@@ -391,36 +407,26 @@ public class ManteCursos extends JDialog {
 		try {
 			int codigoCurso = leerCodigoCurso();
 			Curso x = ac.buscar(codigoCurso);
-			
-			if(x != null) {
-				String nombreCurso = leerNombreCurso();
-				if(nombreCurso.length() > 0) {
-						int codigoDocente = leerCodigoDocente();
-						if(codigoDocente < 4 || codigoDocente > 4)
-						try{
-							double hora = leerHoras();
-							x.setNombre(nombreCurso);
-							x.setCodigoDocente(codigoDocente);
-							x.setHoras(hora);
-							int ok = confirmar("¿ Desea modificar el curso ?");
-							if(ok == 0) {
+			if(x != null){
+				String nombreCurso= leerNombreCurso();
+				if(nombreCurso.length() > 0){
+					try {
+						double hora = leerHoras();
+						x.setNombre(nombreCurso);
+						x.setHoras(hora);
+						int ok = confirmar("¿Desea modificar el curso?");
+						if(ok == 0){
 							ac.actualizarArchivo();
 							listar();
 							txtNombreCurso.requestFocus();
-							} 
-						} catch(Exception e) {
-							error("Ingrese bien las HORAS", txtHoras);
 						}
-						else
-							error("Ingrese bien el CÓDIGO DOCENTE",txtCodigoDocente);
+					} catch (Exception e) {
+						
+					}
 				}
-				else 
-					error("Ingrese el NOMBRE DEL CURSO CORRECTAMENTE", txtNombreCurso);
 			}
-			else
-				error("El código" + codigoCurso + "no existe",txtCodigoCurso);
-		} catch(Exception e) {
-			error("Ingrese el CÓDIGO CORRECTAMENTE",txtCodigoCurso);
+		} catch (Exception e) {
+			error("Ingrese bien el CÓDIGO DEL CURSO", txtCodigoCurso);
 		}
 	}
 	
@@ -458,6 +464,7 @@ public class ManteCursos extends JDialog {
 	void habilitarBotones(boolean sino) {
 		if(tipoOperacion == ADICIONAR) {
 			btnOk.setEnabled(!sino);
+			btnCancelar.setEnabled(!sino);
 			btnBuscar.setEnabled(sino);
 			btnEliminar.setEnabled(sino);
 			btnConsultar.setEnabled(sino);
@@ -477,7 +484,6 @@ public class ManteCursos extends JDialog {
 	void habilitarCampos(boolean sino) {
 		txtCodigoCurso.setEnabled(sino);
 		txtNombreCurso.setEnabled(sino);
-		txtCodigoDocente.setEnabled(sino);
 		txtHoras.setEnabled(sino);
 	}
 	
@@ -488,11 +494,7 @@ public class ManteCursos extends JDialog {
 	}
 	
 	String leerNombreCurso() {
-		return txtNombreCurso.getText().trim();
-	}
-	
-	int leerCodigoDocente() {
-		return Integer.parseInt(txtCodigoDocente.getText().trim());
+		return txtNombreCurso.getText().trim().toUpperCase().toUpperCase();
 	}
 	
 	Double leerHoras() {
@@ -506,4 +508,5 @@ public class ManteCursos extends JDialog {
 	int confirmar(String s) {
 		return JOptionPane.showConfirmDialog(this, s, "Alerta", 0, 1, null);
 	}
+
 }

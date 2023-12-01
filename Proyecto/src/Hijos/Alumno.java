@@ -33,6 +33,6 @@ public class Alumno extends Persona {
 	
 	// METODOS PUBLICOS
 	public String nombreApellido() {
-		return nombres + apellidos;
+		return nombres + " " + apellidos;
 	}
 }

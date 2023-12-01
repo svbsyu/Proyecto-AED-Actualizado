@@ -1,6 +1,5 @@
 package Arreglos;
 import Clases.Curso;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -70,7 +69,6 @@ public class ArregloCurso {
     			x = obtener(i);
     			linea = x.getCodigoCurso() + ";" +
     					x.getNombre() + ";" + 
-    					x.getCodigoDocente() + ";" +
     					x.getHoras();
     			pw.println(linea);
     		}
@@ -84,19 +82,21 @@ public class ArregloCurso {
     		BufferedReader br;
     		String linea, nombreCursos;
     		String[] s;
-    		int codigoCurso, codigoDocente;
+    		int codigoCurso;
     		double horas;
     		br = new BufferedReader(new FileReader("cursos.txt"));
     		while((linea = br.readLine()) != null) {
     			s = linea.split(";");
     			codigoCurso = Integer.parseInt(s[0].trim());
     			nombreCursos = s[1].trim();
-    			codigoDocente = Integer.parseInt(s[2].trim());
-    			horas = Double.parseDouble(s[3].trim());
-    			adicionar(new Curso(codigoCurso, nombreCursos, codigoDocente, horas));
+    			horas = Double.parseDouble(s[2].trim());
+    			adicionar(new Curso(codigoCurso, nombreCursos, horas));
     		}
     		br.close();
     	} catch(Exception e) {
     	}
     }
+    public ArrayList <Curso> getCur(){
+		return this.cur;
+	}
 }

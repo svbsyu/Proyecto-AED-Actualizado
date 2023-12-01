@@ -216,7 +216,7 @@ private int tipoOperacion;
 		btnSalir.setBounds(545, 113, 229, 23);
 		getContentPane().add(btnSalir);
 		
-		lblCategoria = new JLabel("Categoria");
+		lblCategoria = new JLabel("Turno");
 		lblCategoria.setBounds(10, 141, 86, 23);
 		getContentPane().add(lblCategoria);
 		
@@ -231,8 +231,8 @@ private int tipoOperacion;
 		getContentPane().add(scrollPane);
 		
 		table = new JTable();
+		table.setRowSelectionAllowed(false);
 		table.setEnabled(false);
-		table.setFillsViewportHeight(true);
 		scrollPane.setViewportView(table);
 		
 		modelo = new DefaultTableModel();
@@ -241,11 +241,21 @@ private int tipoOperacion;
 		modelo.addColumn("Apellidos");
 		modelo.addColumn("Celular");
 		modelo.addColumn("DNI");
-		modelo.addColumn("Categoria");
+		modelo.addColumn("Turno");
 		table.setModel(modelo);
+		
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnCancelar(e);
+			}
+		});
+		btnCancelar.setBounds(186, 113, 101, 23);
+		getContentPane().add(btnCancelar);
 		listar();
 	}
 	ArregloDocente ad = new ArregloDocente();
+	private JButton btnCancelar;
 	
 	protected void actionPerformedBtnAdicionar(ActionEvent e) {
 		tipoOperacion = ADICIONAR;
@@ -300,14 +310,51 @@ private int tipoOperacion;
 		habilitarBotones(false);
 		txtCodigo.requestFocus();
 	}
+	
+	protected void actionPerformedBtnSalir(ActionEvent e) {
+		dispose();
+	}
+	protected void actionPerformedBtnCancelar(ActionEvent e) {
+		setear();
+	}
+	
+	void setear() {
+		if(tipoOperacion == ADICIONAR) {
+			txtNombre.setText("");
+			txtApellidos.setText("");
+			txtCelular.setText("");
+			txtDNI.setText("");
+			txtNombre.requestFocus();
+		}
+		
+		if(tipoOperacion == MODIFICAR || tipoOperacion == ELIMINAR) {
+			txtCodigo.setText("");
+			txtNombre.setText("");
+			txtApellidos.setText("");
+			txtCelular.setText("");
+			txtDNI.setText("");
+			txtCodigo.setEditable(true);
+			txtCodigo.requestFocus();
+			btnBuscar.setEnabled(true);
+			btnCancelar.setEnabled(true);
+			txtNombre.setEnabled(false);
+			txtApellidos.setEnabled(false);
+			txtCelular.setEnabled(false);
+			txtDNI.setEnabled(false);
+			btnOK.setEnabled(false);
+			btnCancelar.setEnabled(false);
+		}
+
+	}
+	
 	int leerCodigo() {
 		return Integer.parseInt(txtCodigo.getText().trim());
 	}
 	String leerNombre() {
-		return txtNombre.getText().trim();
+		return txtNombre.getText().trim().toUpperCase();
 	}
 	String leerApellidos() {
-		return txtApellidos.getText().trim();
+		return txtApellidos.getText().trim().toUpperCase();
 	}
 	String leerCelular() {
 		return txtCelular.getText().trim();
@@ -327,6 +374,8 @@ private int tipoOperacion;
 	void mensaje(String s) {
 		JOptionPane.showMessageDialog(this, s, "Información", 0);
 	}
+	
+
 	void error(String s, JTextField txt) {
 		mensaje(s);
 		txt.setText("");
@@ -342,8 +391,10 @@ private int tipoOperacion;
 		
 	}
 	void habilitarBotones(boolean sino) {
-		if (tipoOperacion == ADICIONAR)
+		if (tipoOperacion == ADICIONAR) {
 			btnOK.setEnabled(!sino);
+			btnCancelar.setEnabled(!sino);
+		}
 		else {
 			btnBuscar.setEnabled(!sino);
 			btnOK.setEnabled(false);
@@ -365,7 +416,7 @@ private int tipoOperacion;
 					x.getApellidos(),
 					x.getTelefono(),
 					x.getDni(),
-					enTextoCategoria(x.getCategoria())
+					enTextoCategoria(x.getCategoria()).toUpperCase()
 			};
 		modelo.addRow(fila);
 		}
@@ -382,8 +433,10 @@ private int tipoOperacion;
 					String dni = leerDni();
 					if(ad.buscar(dni) == null){
 						try {
+							int codCurso = -1;
+							String nomCurso = "NO ASIGNADO";
 							int categoria = leerPosCategoria();
-							Docente nuevo = new Docente(codigo, nombre, apellido, telefonia, dni, categoria);
+							Docente nuevo = new Docente(codigo, nombre, apellido, telefonia, dni, codCurso, nomCurso, categoria);
 							ad.adicionar(nuevo);
 							listar();
 							txtCodigo.setText("" + ad.codigoCorrelativo());
@@ -394,7 +447,7 @@ private int tipoOperacion;
 							txtNombre.requestFocus();
 						}
 						catch(Exception e) {
-						error("El DNI"+ dni + "ya existe.", txtDNI);
+						error("El DNI: "+ dni + "ya existe.", txtDNI);
 					}
 				}
 					else
@@ -409,6 +462,7 @@ private int tipoOperacion;
 		else
 			error("Ingrese el nombre correctamente", txtNombre);
 	}
+	
 	void consultarDocente() {
 		try {
 			int codigo = leerCodigo();
@@ -539,12 +593,14 @@ private int tipoOperacion;
 					txtDNI.setEditable(true);
 					btnBuscar.setEnabled(false);
 					btnOK.setEnabled(true);
+					btnCancelar.setEnabled(true);
 					txtNombre.requestFocus();
 				}
 				if (tipoOperacion == ELIMINAR) {
 					txtCodigo.setEditable(false);
 					btnBuscar.setEnabled(false);
 					btnOK.setEnabled(true);
+					btnCancelar.setEnabled(true);
 				}
 			}
 			else
@@ -553,8 +609,5 @@ private int tipoOperacion;
 		catch(Exception e) {
 			error("Ingrese el codigo correctamente", txtCodigo);
 		}
-	}
-	protected void actionPerformedBtnSalir(ActionEvent e) {
-		dispose();
 	}
 }

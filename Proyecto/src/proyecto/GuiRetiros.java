@@ -2,9 +2,9 @@ package proyecto;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.Image;
 
@@ -17,25 +17,34 @@ import java.awt.event.ActionEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
+
+import Arreglos.ArregloAlumno;
+import Arreglos.ArregloCurso;
+import Arreglos.ArregloMatricula;
+import Clases.Curso;
+import Hijos.Alumno;
+
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class GuiRetiros extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel panel;
-	private JPanel panel_1;
 	private JLabel lblCdCurso;
-	private JLabel lblNewLabel;
+	private JLabel lblCodAlumno;
 	private JLabel lblNewLabel_1;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JComboBox<Object> comboBox;
-	private JPanel panel_2;
-	private JButton btnNewButton;
-	private JButton btnNewButton_1;
-	private JButton btnNewButton_2;
+	private JTextField txtCurso;
+	private JTextField txtAlumno;
+	private JComboBox<Object> cboCodAlumno;
+	private JButton btnRetirar;
+	private JButton btnSalir;
 	private JScrollPane scrollPane;
-	private JTable table;
+	private JTable tblTabla;
+	private JComboBox<Object> cboCurso;
+	private JComboBox<String> cboEstado;
+	private JButton btnOk;
+	private DefaultTableModel modelo;
 
 	/**
 	 * Launch the application.
@@ -62,92 +71,255 @@ public class GuiRetiros extends JDialog {
 		setModal(true);
 		setResizable(false);
 		setTitle("Retiros");
-		setBounds(100, 100, 555, 500);
+		setBounds(100, 100, 800, 600);
 		getContentPane().setLayout(null);
 		
 		// Logo principal
 		ImageIcon logo = new ImageIcon(GuiPrincipal.class.getResource("/Imagenes/Logo.png"));
 		Image imagen = logo.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 		setIconImage(new ImageIcon(imagen).getImage());
+		modelo = new DefaultTableModel();
+		modelo.addColumn("Código");
+		modelo.addColumn("Nombres");
+		modelo.addColumn("Apellidos");
+		modelo.addColumn("Celular");
+		modelo.addColumn("DNI");
+		modelo.addColumn("Estado");
 		
-		panel = new JPanel();
-		panel.setBounds(0, 0, 539, 461);
-		getContentPane().add(panel);
-		panel.setLayout(null);
+		btnSalir = new JButton("Salir");
+		btnSalir.setBounds(683, 97, 89, 69);
+		getContentPane().add(btnSalir);
 		
-		panel_1 = new JPanel();
-		panel_1.setBounds(10, 11, 353, 126);
-		panel_1.setLayout(null);
-		panel_1.setBorder(new TitledBorder(null, "Datos del Matriculado", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel.add(panel_1);
+		btnRetirar = new JButton("Retirar");
+		btnRetirar.setBounds(683, 12, 89, 72);
+		getContentPane().add(btnRetirar);
+		
+		cboCodAlumno = new JComboBox<Object>();
+		cboCodAlumno.setBounds(106, 12, 100, 22);
+		getContentPane().add(cboCodAlumno);
+		cboCodAlumno.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				itemStateChangedCboCodAlumno(e);
+			}
+		});
+		cboCodAlumno.setEnabled(false);
+		
+		cboCurso = new JComboBox<Object>();
+		cboCurso.setBounds(106, 76, 100, 22);
+		getContentPane().add(cboCurso);
+		cboCurso.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				itemStateChangedCboCurso(e);
+			}
+		});
+		cboCurso.setEnabled(false);
+		
+		cboEstado = new JComboBox<String>();
+		cboEstado.setBounds(106, 141, 100, 22);
+		getContentPane().add(cboEstado);
+		cboEstado.setModel(new DefaultComboBoxModel<String>(new String[] {"REGISTRADO", "MATRICULADO", "RETIRADO"}));
+		cboEstado.setEnabled(false);
+		
+		btnOk = new JButton("OK");
+		btnOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnOk(e);
+			}
+		});
+		btnOk.setBounds(218, 141, 89, 23);
+		getContentPane().add(btnOk);
+		btnOk.setEnabled(false);
+		
+		txtCurso = new JTextField();
+		txtCurso.setBounds(12, 111, 194, 20);
+		getContentPane().add(txtCurso);
+		txtCurso.setEditable(false);
+		txtCurso.setEnabled(false);
+		txtCurso.setColumns(10);
+		
+		txtAlumno = new JTextField();
+		txtAlumno.setBounds(12, 47, 194, 20);
+		getContentPane().add(txtAlumno);
+		txtAlumno.setEditable(false);
+		txtAlumno.setEnabled(false);
+		txtAlumno.setColumns(10);
+		
+		lblNewLabel_1 = new JLabel("Estado");
+		lblNewLabel_1.setBounds(12, 142, 122, 20);
+		getContentPane().add(lblNewLabel_1);
+		lblNewLabel_1.setFont(new Font("Arial", Font.PLAIN, 15));
 		
 		lblCdCurso = new JLabel("Cód. Curso");
-		lblCdCurso.setFont(new Font("Microsoft PhagsPa", Font.PLAIN, 15));
-		lblCdCurso.setBounds(10, 87, 122, 20);
-		panel_1.add(lblCdCurso);
+		lblCdCurso.setBounds(12, 77, 122, 20);
+		getContentPane().add(lblCdCurso);
+		lblCdCurso.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		
-		lblNewLabel = new JLabel("Cód. Alumno");
-		lblNewLabel.setFont(new Font("Microsoft PhagsPa", Font.PLAIN, 15));
-		lblNewLabel.setBounds(10, 23, 122, 20);
-		panel_1.add(lblNewLabel);
+		lblCodAlumno = new JLabel("Cód. Alumno");
+		lblCodAlumno.setBounds(12, 13, 122, 20);
+		getContentPane().add(lblCodAlumno);
+		lblCodAlumno.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		
-		lblNewLabel_1 = new JLabel("Cód. Matricula");
-		lblNewLabel_1.setFont(new Font("Microsoft PhagsPa", Font.PLAIN, 15));
-		lblNewLabel_1.setBounds(10, 56, 122, 20);
-		panel_1.add(lblNewLabel_1);
+		scrollPane = new JScrollPane();
+		scrollPane.setBounds(12, 179, 760, 369);
+		getContentPane().add(scrollPane);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(141, 25, 86, 20);
-		panel_1.add(textField);
-		
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(141, 58, 86, 20);
-		panel_1.add(textField_1);
-		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(141, 89, 86, 20);
-		panel_1.add(textField_2);
-		
-		comboBox = new JComboBox<Object>();
-		comboBox.setModel(new DefaultComboBoxModel<Object>(new String[] {"comojodes"}));
-		comboBox.setBounds(250, 24, 86, 22);
-		panel_1.add(comboBox);
-		
-		panel_2 = new JPanel();
-		panel_2.setBounds(373, 11, 157, 126);
-		panel_2.setLayout(null);
-		panel_2.setBorder(new TitledBorder(null, "Acciones", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel.add(panel_2);
-		
-		btnNewButton = new JButton("Buscar");
-		btnNewButton.setBounds(36, 19, 89, 23);
-		panel_2.add(btnNewButton);
-		
-		btnNewButton_1 = new JButton("Retirar");
-		btnNewButton_1.setBounds(36, 53, 89, 23);
-		panel_2.add(btnNewButton_1);
-		
-		btnNewButton_2 = new JButton("Salir");
-		btnNewButton_2.addActionListener(new ActionListener() {
+		tblTabla = new JTable();
+		scrollPane.setViewportView(tblTabla);
+		tblTabla.setFillsViewportHeight(true);
+		tblTabla.setModel(modelo);
+		btnRetirar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnRetirar(e);
+			}
+		});
+		btnSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actionPerformedBtnNewButton_2(e);
 			}
 		});
-		btnNewButton_2.setBounds(36, 87, 89, 23);
-		panel_2.add(btnNewButton_2);
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 141, 520, 309);
-		panel.add(scrollPane);
+
 		
-		table = new JTable();
-		table.setFillsViewportHeight(true);
-		scrollPane.setViewportView(table);
+		actualizarCboAlumno();
+		actualizarCboCurso();
+		limpieza();
+		listar();
 	}
+	
+	ArregloMatricula am = new ArregloMatricula();
+	ArregloAlumno al = new ArregloAlumno();
+	ArregloCurso ac = new ArregloCurso();
+	
 	protected void actionPerformedBtnNewButton_2(ActionEvent e) {
 		dispose();
+	}
+	
+	protected void actionPerformedBtnRetirar(ActionEvent e) {
+		habilitarcampos(true);
+		cboEstado.setSelectedIndex(2);
+		btnOk.setEnabled(true);
+	}
+	
+	protected void actionPerformedBtnOk(ActionEvent e) {
+		try {
+			int codAlumno = leerCodigoAlumno();
+			Alumno a = al.buscar(codAlumno);
+			if(a != null)
+			try {
+				int codCurso = leerCodigoCurso();
+				int estado = leerEstado();
+			if(ac.buscar(codCurso) != null) {
+					int ok = confirmar("Desea retirar al " + obtenerAlumno());
+					if(ok == 0) {
+						a.setEstado(estado);
+						al.actualizarArchivo();
+						listar();
+					}
+				} else {
+					mensaje("El código curso no existe");
+				}
+			} catch(Exception f) {
+				mensaje("Ingrese bien el código curso");
+			}
+			else
+				mensaje("El código alumno no existe");
+		} catch(Exception f) {
+			mensaje("Ha ocurrido un error inesperado");
+		}
+	}
+	// Métodos tipo void (sin parámetros)
+	void limpieza() {
+		txtAlumno.setText("");
+		txtCurso.setText("");
+		cboEstado.setSelectedIndex(-1);
+	}
+	
+	void listar() {
+		modelo.setRowCount(0);
+		for(int i=0; i<al.tamanio(); i++) {
+			Object[] fila = { al.obtener(i).getCodigoAlumno(),
+						      al.obtener(i).getNombres(),
+							  al.obtener(i).getApellidos(),
+							  al.obtener(i).getTelefono(),
+							  al.obtener(i).getDni(),
+							  textoEstado(al.obtener(i).getEstado())};
+			modelo.addRow(fila);
+		}
+	}
+	// Encontrar códigos de alumnos y cursos
+	void actualizarCboAlumno() {
+		cboCodAlumno.removeAllItems();
+		for(int i=0; i < al.tamanio(); i++) {
+			cboCodAlumno.addItem(al.obtener(i).getCodigoAlumno());
+		}
+		cboCodAlumno.setSelectedIndex(-1);
+	}
+	
+	void actualizarCboCurso() {
+		cboCurso.removeAllItems();
+		for(int i=0; i < ac.tamanio(); i++) {
+			cboCurso.addItem(ac.obtener(i).getCodigoCurso());
+		}
+		cboCurso.setSelectedIndex(-1);
+	}
+	
+	// Métodos tipo void (con parámetros)
+		void mensaje(String s) {
+			JOptionPane.showMessageDialog(this, s);
+		}
+			
+		void error(String s, JTextField txt) {
+				mensaje(s);
+			txt.setText("");
+			txt.requestFocus();
+		}
+		
+		void habilitarcampos(boolean sino) {
+			cboCodAlumno.setEnabled(sino);;
+			cboCurso.setEnabled(sino);
+		}
+	
+	// Métodos que retornan valor (sin parámetros)
+	int leerCodigoAlumno() {
+		return Integer.parseInt(cboCodAlumno.getSelectedItem().toString());
+	}
+	
+	int leerCodigoCurso() {
+		return Integer.parseInt(cboCurso.getSelectedItem().toString());
+	}
+	int leerEstado() {
+		return cboEstado.getSelectedIndex();
+	}
+	
+	// Métodos que retornar valor(con parámetros)
+	String textoEstado(int i) {
+		return cboEstado.getItemAt(i);
+	}
+	
+	int confirmar(String s) {
+		return JOptionPane.showConfirmDialog(this, s, "Alerta", 0, 1, null);
+	}
+	
+	String obtenerAlumno() {
+		Alumno a = al.buscar(leerCodigoAlumno());
+		return "alumno " + a.getNombres() + " " + a.getApellidos();
+	}
+	
+	// Accionar al seleccionar un cbo
+	protected void itemStateChangedCboCodAlumno(ItemEvent e) {
+		try {
+			int codAlumno = leerCodigoAlumno();
+			Alumno a = al.buscar(codAlumno);
+			txtAlumno.setText(a.getNombres() + " " + a.getApellidos());
+		} catch(Exception f) {
+		}
+	}
+	protected void itemStateChangedCboCurso(ItemEvent e) {
+		try {
+			int codCurso = leerCodigoCurso();
+			Curso c = ac.buscar(codCurso);
+			txtCurso.setText(c.getNombre());
+		} catch(Exception f) {	
+		}
 	}
 }

@@ -159,9 +159,9 @@ public class ManteAlumnos extends JDialog {
 		contentPane.add(txtDNI);
 		
 		cboEstado = new JComboBox<String>();
-		cboEstado.setModel(new DefaultComboBoxModel<String>(new String[] {"MATRICULADO", "REGISTRADO", "RETIRADO"}));
-		cboEstado.setBounds(75, 136, 121, 22);
 		cboEstado.setEnabled(false);
+		cboEstado.setModel(new DefaultComboBoxModel<String>(new String[] {"REGISTRADO", "MATRICULADO", "RETIRADO"}));
+		cboEstado.setBounds(75, 136, 121, 22);
 		contentPane.add(cboEstado);
 		
 		btnOk = new JButton("Ok");
@@ -256,12 +256,23 @@ public class ManteAlumnos extends JDialog {
 		btnBuscar.setBounds(206, 11, 113, 23);
 		contentPane.add(btnBuscar);
 		
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setEnabled(false);
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actionPerformedBtnCancelar(e);
+			}
+		});
+		btnCancelar.setBounds(205, 111, 114, 23);
+		contentPane.add(btnCancelar);
+		
 		ajustarAnchoColumnas();
 		listar();
 	}
 	
 	// Declaración global
 	ArregloAlumno aa = new ArregloAlumno();
+	private JButton btnCancelar;
 	
 	protected void actionPerformedBtnIngresar(ActionEvent e) {
 		tipoOperacion = ADICIONAR;
@@ -271,6 +282,7 @@ public class ManteAlumnos extends JDialog {
 		habilitarBotones(false);
 		habilitarCampos(true);
 		txtCodigoAlumno.setEnabled(false);
+		cboEstado.setEnabled(false);
 	}
 	
 	protected void actionPerformedBtnModificar(ActionEvent e) {
@@ -340,15 +352,47 @@ public class ManteAlumnos extends JDialog {
 		}
 	}
 	
+	protected void actionPerformedBtnCancelar(ActionEvent e) {
+		setear();
+	}
+	
+	void setear() {
+		if(tipoOperacion == ADICIONAR) {
+			txtNombreAlumno.setText("");
+			txtApellidoAlumno.setText("");
+			txtCelularAlumno.setText("");
+			txtDNI.setText("");
+			txtNombreAlumno.requestFocus();
+		}
+		
+		if(tipoOperacion == MODIFICAR || tipoOperacion == ELIMINAR) {
+			txtCodigoAlumno.setText("");
+			txtNombreAlumno.setText("");
+			txtApellidoAlumno.setText("");
+			txtCelularAlumno.setText("");
+			txtDNI.setText("");
+			btnBuscar.setEnabled(true);
+			txtCodigoAlumno.setEnabled(true);
+			txtCodigoAlumno.requestFocus();
+			txtNombreAlumno.setEnabled(false);
+			txtApellidoAlumno.setEnabled(false);
+			txtCelularAlumno.setEnabled(false);
+			txtDNI.setEnabled(false);
+			btnOk.setEnabled(false);
+			btnCancelar.setEnabled(false);
+		}
+	}
+	
 	
 	// Métodos tipo void (sin parámetros)
 	void ajustarAnchoColumnas() {
 		TableColumnModel tcm = tblTabla.getColumnModel();
-		tcm.getColumn(0).setPreferredWidth(anchoColumna(8)); // Código del Alumno
+		tcm.getColumn(0).setPreferredWidth(anchoColumna(1)); // Código del Alumno
 		tcm.getColumn(1).setPreferredWidth(anchoColumna(16)); // Nombre del Alumno
 		tcm.getColumn(2).setPreferredWidth(anchoColumna(16)); // Apellido del Alumno
-		tcm.getColumn(3).setPreferredWidth(anchoColumna(10)); // Celular
-		tcm.getColumn(4).setPreferredWidth(anchoColumna(10)); // Dni
+		tcm.getColumn(3).setPreferredWidth(anchoColumna(3)); // Celular
+		tcm.getColumn(4).setPreferredWidth(anchoColumna(2)); // Dni
+		tcm.getColumn(5).setPreferredWidth(anchoColumna(10)); // Estado
 	}
 	
 	void listar() {
@@ -435,18 +479,21 @@ public class ManteAlumnos extends JDialog {
 					txtCodigoAlumno.setEnabled(false);
 					btnBuscar.setEnabled(false);
 					btnOk.setEnabled(true);
+					btnCancelar.setEnabled(true);
+					cboEstado.setEnabled(false);
 					txtNombreAlumno.requestFocus();
 				}
 				if(tipoOperacion == ELIMINAR) {
 					txtCodigoAlumno.setEnabled(false);
 					btnBuscar.setEnabled(false);
 					btnOk.setEnabled(true);
+					btnCancelar.setEnabled(true);
 				}
 			}
 			else
 				error("El código " + codigoAlumno + " no existe",txtCodigoAlumno);
 		} catch(Exception e) {
-			error("Ingrese el CÓDIGO DEL CURSO correctamente",txtCodigoAlumno);
+			error("Ingrese el CÓDIGO DEL ALUMNO correctamente",txtCodigoAlumno);
 		}
 	}
 	
@@ -491,21 +538,25 @@ public class ManteAlumnos extends JDialog {
 		try {
 			int codigoAlumno = leerCodigoAlumno();
 			Alumno x = aa.buscar(codigoAlumno);
-			
-			if(x != null) {
-				int ok = confirmar("¿Desea eliminar el curso?");
+			if(x != null) 
+				if(x.getEstado() == 0) {
+				int ok = confirmar("¿Desea eliminar al alumno?");
 				if(ok == 0) {
 					aa.eliminar(x);
 					listar();
 					btnOk.setEnabled(false);
+					}
 				}
-			}
+				else
+					mensaje("Solo pueden eliminarse alumnos registrados");
 			else 
 				error("El código " + codigoAlumno + " no existe",txtCodigoAlumno);
 		} catch(Exception e) {
 			error("Ingrese el CÓDIGO DEL ALUMNO correctamente",txtCodigoAlumno);
 		}
 	}
+	
+
 	
 	//Metodos boleanos
 	boolean comparacionNomApe() {
@@ -529,12 +580,15 @@ public class ManteAlumnos extends JDialog {
 	void habilitarBotones(boolean sino) {
 		if(tipoOperacion == ADICIONAR) {
 			btnOk.setEnabled(!sino);
+			btnCancelar.setEnabled(!sino);
 			btnBuscar.setEnabled(sino);
 			btnEliminar.setEnabled(sino);
 			btnConsultar.setEnabled(sino);
 			btnModificar.setEnabled(sino);
 			btnOpciones.setEnabled(!sino);
+			btnIngresar.setEnabled(sino);
 		}
+		
 		else {
 		btnBuscar.setEnabled(!sino);
 		btnIngresar.setEnabled(sino);
@@ -550,9 +604,10 @@ public class ManteAlumnos extends JDialog {
 		txtNombreAlumno.setEnabled(sino);
 		txtApellidoAlumno.setEnabled(sino);
 		txtCelularAlumno.setEnabled(sino);
-			if(tipoOperacion == ADICIONAR)
+			if(tipoOperacion == ADICIONAR) 
 			   txtDNI.setEnabled(sino);
 		cboEstado.setEnabled(sino);
+		
 	}
 	
 	
@@ -562,11 +617,11 @@ public class ManteAlumnos extends JDialog {
 	}
 	
 	String leerNombreAlumno() {
-		return txtNombreAlumno.getText().trim();
+		return txtNombreAlumno.getText().trim().toUpperCase();
 	}
 	
 	String leerApellidoAlumno() {
-		return txtApellidoAlumno.getText().trim();
+		return txtApellidoAlumno.getText().trim().toUpperCase();
 	}
 	
 	String leerCelular() {
@@ -591,4 +646,5 @@ public class ManteAlumnos extends JDialog {
 	int confirmar(String s) {
 		return JOptionPane.showConfirmDialog(this, s, "Alerta", 0, 1, null);
 	}
+
 }
