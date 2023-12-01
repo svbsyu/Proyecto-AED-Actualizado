@@ -3,7 +3,6 @@ package proyecto;
 
 import java.awt.EventQueue;
 
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
@@ -128,39 +127,61 @@ public class GuiReportes extends JDialog implements ActionListener {
 		}
 		}
 	
+	private ArrayList<Matricula> obtenerMatriculasPorAlumno(int codigoAlumno) {
+	    ArrayList<Matricula> matriculas = new ArrayList<>();
+	    
+	    for (Matricula matricula : am.getMatriculas()) {
+	        if (matricula.getCodigoAlumno() == codigoAlumno) {
+	            matriculas.add(matricula);
+	        }
+	    }
+	    
+	    return matriculas;
+	}
+	private Curso obtenerCursoPorCodigo(int codigoCurso) {
+	    for (Curso curso : ac.getCur()) {
+	        if (curso.getCodigoCurso() == codigoCurso) {
+	            return curso;
+	        }
+	    }
+	    
+	    return null;
+	}
 	void CursosMatriculadosAlumno() {
-		Matricula m;
 		txtS.setText("" + "\n");
-		imprimir("Cantidad de Matriculados: "+am.tamanio()+"\n");
-		for(int i=0; i<am.tamanio(); i++) {
-			m = am.obtener(i);
-			Alumno a = aa.buscar(m.getCodigoAlumno());
-			Curso c = ac.buscar(m.getCodigoCurso());
-			imprimir("Alumno              :" + a.nombreApellido());
-			imprimir("Cursos              :" + c.getNombre()+"\n");	
-			}
+	    ArrayList<Alumno> aluList = aa.getAlu();
+	    
+	    for (Alumno alumno : aluList) {
+	        imprimir("Codigo de alumno : " + alumno.getCodigoAlumno());
+	        imprimir("Nombre de alumno : " + alumno.getNombres());
+	        imprimir("Apellido de alumno : " + alumno.getApellidos());
+	        imprimir("DNI : " + alumno.getDni());
+	        
+	        imprimir("Cursos matriculados:");
+	        
+	        // Obtener la lista de matrículas para el alumno actual
+	        ArrayList<Matricula> matriculas = obtenerMatriculasPorAlumno(alumno.getCodigoAlumno());
+	        
+	        
+	        for (Matricula matricula : matriculas) {
+	            Curso curso = obtenerCursoPorCodigo(matricula.getCodigoCurso());
+	            if (curso != null) {
+	                imprimir("  - Codigo de curso : " + curso.getCodigoCurso());
+	                imprimir("    Nombre de curso : " + curso.getNombre());
+	                imprimir("    Horas de curso  : " + curso.getHoras());
+	            }
+	        }
+	        
+	        imprimir("-------------------------------------------------------");
+	        imprimir("");
+	    }
 	}
 	void CursosAsignadosDocente() {
 		txtS.setText("" + "\n");
-		imprimir("Cantidad de Matriculados: "+ad.tamanio()+"\n");
-	for(int i=0;i<ad.tamanio();i++) {
-		imprimir("Docente             :" + ad.obtener(i).nombreApellido());
-		imprimir("Cursos              :" + ac.obtener(i).getNombre()+"\n");
-	}
-	}
-	void AlumnosMatriculadosCurso() {
-		txtS.setText("" + "\n");
-		imprimir("Cantidad de Matriculados: "+ad.tamanio()+"\n");
-		for(int i=0;i<ad.tamanio();i++) {
-			imprimir("Curso                :" + ad.obtener(i).nombreApellido());
-			imprimir("Alumnos              :" + ac.obtener(i).getNombre()+"\n");
-		}
-	}
-	void DocenteSinCursosAsignados() {
-		txtS.setText("" + "\n");
 		ArrayList <Docente> doc = ad.getDocente();
 		for(int i= 0; i<doc.size(); i++) {
-			if(!estadoDocente(doc.get(i).getCodigoDocente())) {
+			Docente d = doc.get(i);
+			if(d.getCodCurso() != -1) {
 				imprimir("Codigo de Docente : " + doc.get(i).getCodigoDocente());
 				imprimir("Nombre de alumno : " + doc.get(i).getNombres());
 				imprimir("Apellido de alumno : " + doc.get(i).getApellidos());
@@ -169,12 +190,34 @@ public class GuiReportes extends JDialog implements ActionListener {
 			}	
 		}
 	}
-	
-	boolean estadoDocente(int codigoCurso) {
-		for(int i = 0; i < ad.tamanio(); i++) 
-			if(ad.obtener(i).getCodCurso() == codigoCurso)
-				return true;
-		return false;
+	void AlumnosMatriculadosCurso() {
+		txtS.setText("" + "\n");
+		ArrayList <Alumno> alu = aa.getAlu();
+		for(int i= 0; i<alu.size(); i++) {
+			if(estadoMatricula(alu.get(i).getCodigoAlumno())) {
+				imprimir("Codigo de alumno : " + alu.get(i).getCodigoAlumno());
+				imprimir("Nombre de alumno : " + alu.get(i).getNombres());
+				imprimir("Apellido de alumno : " + alu.get(i).getApellidos());
+				imprimir("DNI : " + alu.get(i).getDni());
+				imprimir("");
+
+			}
+				
+		}
+	}
+	void DocenteSinCursosAsignados() {
+		txtS.setText("" + "\n");
+		ArrayList <Docente> doc = ad.getDocente();
+		for(int i= 0; i<doc.size(); i++) {
+			Docente d = doc.get(i);
+			if(d.getCodCurso() == -1) {
+				imprimir("Codigo de Docente : " + doc.get(i).getCodigoDocente());
+				imprimir("Nombre de alumno : " + doc.get(i).getNombres());
+				imprimir("Apellido de alumno : " + doc.get(i).getApellidos());
+				imprimir("DNI : " + doc.get(i).getDni());
+				imprimir("");
+			}	
+		}
 	}
 
 	void AlumnosNoMatriculados(){
@@ -198,7 +241,6 @@ public class GuiReportes extends JDialog implements ActionListener {
 				return true;
 		return false;
 	}
-	
 	boolean estadoAlumno(int codigoAlumno) {
 		for (int i=0; i<aa.tamanio(); i++)
 			if (aa.obtener(i).getCodigoAlumno() == codigoAlumno)
